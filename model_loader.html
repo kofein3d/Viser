@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Model Loader — Manual</title>
+<style>
+@font-face {
+  font-family: 'ISOCPEUR';
+  src: url('https://kofein3d.github.io/Packshoter/img/isocpeur.ttf') format('truetype');
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #111111;
+  color: #c8c8c8;
+  font-family: 'ISOCPEUR', monospace;
+  font-size: 1.5rem;
+  line-height: 1.75;
+}
+
+.page {
+  max-width: 1200px;
+  min-width: 320px;
+  margin: 0 auto;
+  background: #333333;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: #1a1a1a;
+  padding: 28px 60px 22px;
+  border-bottom: 3px solid #ffaa00;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header-title {
+  font-size: 3rem;
+  color: #ffaa00;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.header-sub {
+  font-size: 1.5rem;
+  color: #888;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* ── LANG SWITCHER ── */
+.lang-switcher { display: flex; gap: 6px; }
+
+.lang-btn {
+  background: #262626;
+  border: 1px solid #555;
+  border-radius: 6px;
+  color: #c8c8c8;
+  font-family: 'ISOCPEUR', monospace;
+  font-size: 1.2rem;
+  padding: 3px 10px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+
+.lang-btn:hover { border-color: #ffaa00; color: #ffaa00; }
+.lang-btn.active { background: #ffaa00; color: #111; border-color: #ffaa00; }
+
+/* ── DIVIDER ── */
+.divider { height: 4px; background: #262626; }
+
+/* ── QUICK STEPS ── */
+.quick-steps {
+  background: #262626;
+  padding: 28px 60px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #ffaa00;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.steps-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step-card {
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 14px 18px;
+  flex: 1;
+  min-width: 150px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: border-color 0.15s;
+}
+
+.step-card:hover { border-color: #ffaa00; }
+
+.step-num {
+  font-size: 1.8rem;
+  color: #ffaa00;
+  line-height: 1;
+  min-width: 24px;
+}
+
+.step-text { font-size: 1.5rem; }
+.step-text strong { color: #fff; }
+
+/* ── SCREENSHOT SECTION ── */
+.screenshot-section {
+  padding: 32px 60px;
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.screenshot-img {
+  display: block;
+  border: none;
+  width: 357px;
+  height: 410px;
+  flex-shrink: 0;
+  align-self: center;
+  margin-top: -13px;
+}
+
+.annotations {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anno {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+  font-size: 1.2rem;
+  background: #262626;
+  border-left: 3px solid #444;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.anno:hover { border-color: #ffaa00; }
+.anno > span:last-child { padding: 9px 14px; }
+
+.anno-ok   { color: #00c563; }
+.anno-err  { color: #ff5555; }
+.anno-warn { color: #ffaa00; }
+.anno-dot  { color: #4ba8ff; }
+.anno-mark {
+  width: 52px;
+  min-width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: #1e1e1e;
+  flex-shrink: 0;
+  padding: 9px 6px;
+}
+
+/* ── SECTIONS ── */
+.section {
+  padding: 26px 60px;
+  border-top: 1px solid #3a3a3a;
+}
+
+.bg-dark  { background: #262626; }
+.bg-light { background: #333333; }
+.section p { margin-bottom: 10px; font-size: 1.5rem; }
+.section ul, .section ol { padding-left: 28px; margin-bottom: 10px; }
+.section li { margin-bottom: 6px; font-size: 1.5rem; }
+
+strong { color: #fff; }
+
+.tag {
+  display: inline-block;
+  padding: 1px 9px;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 4px;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.tag-green  { color: #00c563; }
+.tag-red    { color: #ff5555; }
+.tag-yellow { color: #ffaa00; }
+.tag-blue   { color: #4ba8ff; }
+
+.note {
+  background: #292929;
+  border-left: 3px solid #ffaa00;
+  border-radius: 6px;
+  padding: 11px 16px;
+  margin: 14px 0;
+  font-size: 1.5rem;
+}
+
+.warning {
+  background: #292929;
+  border-left: 3px solid #ffaa00;
+  border-radius: 6px;
+  padding: 11px 16px;
+  margin: 14px 0;
+  font-size: 1.5rem;
+}
+
+/* ── FAQ ── */
+.faq-item { border-top: 1px solid #3a3a3a; padding: 13px 0; }
+
+.faq-q {
+  color: #ffaa00;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  font-size: 1.5rem;
+}
+
+.faq-q::after { content: '▼'; font-size: 1.5rem; transition: transform 0.2s; margin-left: 8px; flex-shrink: 0; }
+.faq-q.open::after { transform: rotate(180deg); }
+
+.faq-a {
+  display: none;
+  padding-top: 10px;
+  font-size: 1.5rem;
+  color: #c8c8c8;
+}
+.faq-a.visible { display: block; }
+
+/* ── FOOTER ── */
+.footer {
+  background: #1a1a1a;
+  padding: 16px 60px;
+  border-top: 2px solid #262626;
+  font-size: 1.1rem;
+  color: #555;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* ── LANG LOGIC ── */
+[data-lang] { display: none; }
+[data-lang].lang-active { display: block; }
+.step-card[data-lang].lang-active { display: flex; }
+.anno[data-lang].lang-active { display: flex; }
+.faq-q span[data-lang].lang-active { display: inline; }
+.faq-a[data-lang].visible { display: block; }
+
+@media (max-width: 640px) {
+  .header, .quick-steps, .section, .screenshot-section, .footer { padding-left: 20px; padding-right: 20px; }
+  .steps-grid { flex-direction: column; }
+  .screenshot-section { flex-direction: column; }
+  .screenshot-img { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="header-title">Model Loader</div>
+      <div class="header-sub">Viser Plugin &mdash; SKU-based model import</div>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- QUICK STEPS -->
+  <div class="quick-steps bg-dark">
+    <div class="section-title" id="quick-title">Quick start: 4 steps</div>
+    <div class="steps-grid">
+
+      <div class="step-card" data-lang="ru">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Сохрани сцену</strong><br/>Ctrl+S перед запуском</div>
+      </div>
+      <div class="step-card" data-lang="en">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Save the scene</strong><br/>Ctrl+S before starting</div>
+      </div>
+
+      <div class="step-card" data-lang="ru">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Авторизация</strong><br/>появляется только если нужна</div>
+      </div>
+      <div class="step-card" data-lang="en">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Sign in</strong><br/>only appears if needed</div>
+      </div>
+
+      <div class="step-card" data-lang="ru">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Введи SKU</strong><br/>или вставь список Ctrl+V</div>
+      </div>
+      <div class="step-card" data-lang="en">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Enter SKU</strong><br/>or paste a list Ctrl+V</div>
+      </div>
+
+      <div class="step-card" data-lang="ru">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Нажми Load</strong><br/>и жди завершения</div>
+      </div>
+      <div class="step-card" data-lang="en">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Click Load</strong><br/>and wait</div>
+      </div>
+
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- SCREENSHOT + ANNOTATIONS -->
+  <div class="screenshot-section bg-light">
+    <img class="screenshot-img" src="img/ModelLoader.png" alt="Model Loader UI"/>
+    <div class="annotations">
+
+      <div class="anno" data-lang="ru">
+        <span class="anno-mark anno-warn">SKU</span>
+        <span>Поле артикула. Разделители - и _ равнозначны.<br/>Вставь список Ctrl+V — строки добавятся сами.</span>
+      </div>
+      <div class="anno" data-lang="en">
+        <span class="anno-mark anno-warn">SKU</span>
+        <span>Article number field. Separators - and _ are interchangeable.<br/>Paste a list Ctrl+V — rows are added automatically.</span>
+      </div>
+
+      <div class="anno" data-lang="ru">
+        <span class="anno-mark anno-dot">…</span>
+        <span>Выбрать файл вручную (.zip или .max), если SKU нет в базе.</span>
+      </div>
+      <div class="anno" data-lang="en">
+        <span class="anno-mark anno-dot">…</span>
+        <span>Pick a file manually (.zip or .max) if SKU is not in the database.</span>
+      </div>
+
+      <div class="anno" data-lang="ru">
+        <span class="anno-mark anno-ok">✓</span>
+        <span>Модель успешно добавлена в сцену.</span>
+      </div>
+      <div class="anno" data-lang="en">
+        <span class="anno-mark anno-ok">✓</span>
+        <span>Model successfully added to the scene.</span>
+      </div>
+
+      <div class="anno" data-lang="ru">
+        <span class="anno-mark anno-err">✗</span>
+        <span>Ошибка — смотри лог Listener или попробуй ручной файл.</span>
+      </div>
+      <div class="anno" data-lang="en">
+        <span class="anno-mark anno-err">✗</span>
+        <span>Error — check the Listener log or try a manual file.</span>
+      </div>
+
+      <div class="anno" data-lang="ru">
+        <span class="anno-mark anno-warn">?</span>
+        <span>SKU содержит ACC — аксессуаризация неприемлема. Кнопка Load заблокирована.</span>
+      </div>
+      <div class="anno" data-lang="en">
+        <span class="anno-mark anno-warn">?</span>
+        <span>SKU contains ACC — accessories are not supported. Load button is blocked.</span>
+      </div>
+
+      <div class="anno" data-lang="ru">
+        <span class="anno-mark" style="color:#888">4</span>
+        <span><strong>Parallel</strong> — число одновременных загрузок (по умолчанию 4).</span>
+      </div>
+      <div class="anno" data-lang="en">
+        <span class="anno-mark" style="color:#888">4</span>
+        <span><strong>Parallel</strong> — simultaneous downloads (default 4).</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: AUTH -->
+  <div class="section bg-dark">
+    <div class="section-title" data-lang="ru">Авторизация</div>
+    <div class="section-title" data-lang="en">Authorization</div>
+
+    <div data-lang="ru">
+      <p>Поля <strong>Email</strong> и <strong>Password</strong> появляются только если Model Loader не смог войти автоматически.</p>
+      <p>Введи данные своего аккаунта на nfinite.app и нажми <strong>Sign In</strong> — поля снова скроются. Повторно входить обычно не нужно.</p>
+    </div>
+    <div data-lang="en">
+      <p><strong>Email</strong> and <strong>Password</strong> fields appear only if Model Loader could not sign in automatically.</p>
+      <p>Enter your nfinite.app account credentials and click <strong>Sign In</strong> — the fields will hide again. You usually don't need to sign in again.</p>
+    </div>
+  </div>
+
+  <!-- SECTION: SKU INPUT -->
+  <div class="section bg-light">
+    <div class="section-title" data-lang="ru">Ввод SKU</div>
+    <div class="section-title" data-lang="en">Entering SKU</div>
+
+    <div data-lang="ru">
+      <p>Введи SKU модели в строку. Разделители - и _ равнозначны: 820001-VAR-01 и 820001_VAR_01 — одно и то же.</p>
+      <p><strong>Много моделей:</strong> скопируй список SKU (по одному в строке) и вставь Ctrl+V — строки добавятся автоматически.</p>
+      <p>Кнопка <strong>«+»</strong> добавляет пустую строку вручную. После запуска батча она блокируется.</p>
+      <div class="warning">
+        <strong>Цвет фона поля:</strong><br/>
+        <span class="tag tag-red">красный</span> — SKU нет в базе, или это дубль.<br/>
+        <span class="tag tag-yellow">жёлтый</span> — SKU содержит ACC: аксессуаризация неприемлема. Кликни <strong class="tag-yellow">?</strong> справа для подробностей.<br/><br/>
+        Кнопка <strong>Load</strong> заблокирована пока есть красные или жёлтые строки.
+      </div>
+    </div>
+    <div data-lang="en">
+      <p>Type the model article number into the field. Separators - and _ are interchangeable: 820001-VAR-01 and 820001_VAR_01 are the same.</p>
+      <p><strong>Multiple models:</strong> copy a list of SKUs (one per line) and paste Ctrl+V — rows are added automatically.</p>
+      <p>The <strong>«+»</strong> button adds an empty row manually. It is disabled after the batch starts.</p>
+      <div class="warning">
+        <strong>Field background color:</strong><br/>
+        <span class="tag tag-red">RED</span> — SKU not found in the database, or it's a duplicate.<br/>
+        <span class="tag tag-yellow">YELLOW</span> — SKU contains ACC: accessories are not supported. Click <strong class="tag-yellow">?</strong> on the right for details.<br/><br/>
+        The <strong>Load</strong> button is blocked while any red or yellow rows are present.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: LOADING -->
+  <div class="section bg-dark">
+    <div class="section-title" data-lang="ru">Загрузка</div>
+    <div class="section-title" data-lang="en">Loading</div>
+
+    <div data-lang="ru">
+      <p><strong>Parallel</strong> — поле внизу слева, число одновременных загрузок (по умолчанию 4, диапазон 1–8). Обычно менять не нужно.</p>
+      <p>Нажми <strong>Load</strong>. Модели скачиваются <strong>параллельно</strong> и каждая добавляется в сцену <strong>сразу как скачается</strong> — без ожидания остальных.</p>
+      <ul>
+        <li><span class="tag tag-green">✓</span> — модель добавлена в сцену.</li>
+        <li><span class="tag tag-red">✗</span> — ошибка. Подробности в лог Listener.</li>
+      </ul>
+      <p>Во время загрузки окно <strong>заблокировано</strong>. После завершения появится краткое окно ожидания (обновление сцены — время зависит от размера сцены), затем итог: <em>Done. Added: X, errors: Y</em>.</p>
+      <p>Все добавленные модели будут <strong>выделены</strong> в сцене.</p>
+      <div class="note"><strong>Cancel</strong> прерывает загрузку. Уже добавленные модели остаются в сцене.</div>
+    </div>
+    <div data-lang="en">
+      <p><strong>Parallel</strong> — bottom-left field, number of simultaneous downloads (default 4, range 1–8). Usually no need to change.</p>
+      <p>Click <strong>Load</strong>. Models are downloaded <strong>in parallel</strong> and each one is added to the scene <strong>as soon as it's ready</strong> — without waiting for the others.</p>
+      <ul>
+        <li><span class="tag tag-green">✓</span> — model added to the scene.</li>
+        <li><span class="tag tag-red">✗</span> — error. Details in the Listener log.</li>
+      </ul>
+      <p>While loading the window is <strong>locked</strong>. After completion a brief wait window appears (scene update — time depends on scene size), then the summary: <em>Done. Added: X, errors: Y</em>.</p>
+      <p>All added models will be <strong>selected</strong> in the scene.</p>
+      <div class="note"><strong>Cancel</strong> stops the batch. Already added models remain in the scene.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: MANUAL FILE -->
+  <div class="section bg-light">
+    <div class="section-title" data-lang="ru">Ручной режим</div>
+    <div class="section-title" data-lang="en">Manual mode</div>
+
+    <div data-lang="ru">
+      <p>Если SKU нет в базе (красный фон) — можно указать файл вручную:</p>
+      <ol>
+        <li>Нажми <strong>«…»</strong> в строке.</li>
+        <li>Выбери архив (.zip) или сцену (.max).</li>
+        <li>Нажми <strong>Load</strong> — Model Loader возьмёт этот файл вместо базы.</li>
+      </ol>
+      <div class="note">Ручной файл имеет <strong>приоритет</strong>: если выбран, поиск по базе для этой строки игнорируется. Иконка кнопки меняется на 📎.</div>
+    </div>
+    <div data-lang="en">
+      <p>If the SKU is not in the database (red background) — you can specify a file manually:</p>
+      <ol>
+        <li>Click <strong>«…»</strong> in the row.</li>
+        <li>Select an archive (.zip) or scene (.max).</li>
+        <li>Click <strong>Load</strong> — Model Loader will use this file instead of the database.</li>
+      </ol>
+      <div class="note">A manual file takes <strong>priority</strong>: if selected, the database lookup for that row is skipped. The button icon changes to 📎.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: FAQ -->
+  <div class="section bg-dark">
+    <div class="section-title" data-lang="ru">Частые вопросы</div>
+    <div class="section-title" data-lang="en">FAQ</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span data-lang="ru">Можно нажать Load повторно?</span>
+        <span data-lang="en">Can I click Load again?</span>
+      </div>
+      <div class="faq-a" data-lang="ru">Да. Строки со статусом ✓ пропускаются — заново не качаются. Догрузятся только новые и ошибочные строки.</div>
+      <div class="faq-a" data-lang="en">Yes. Rows with ✓ are skipped — not re-downloaded. Only new and failed rows will be processed.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span data-lang="ru">Красный фон, хотя SKU правильный?</span>
+        <span data-lang="en">Red background but the SKU seems correct?</span>
+      </div>
+      <div class="faq-a" data-lang="ru">Проверь лишние пробелы и дубли (такой же SKU в другой строке). Если уверен, что модель есть — прикрепи файл вручную через «…».</div>
+      <div class="faq-a" data-lang="en">Check for extra spaces and duplicates (same SKU in another row). If you're sure the model exists — attach a file manually via «…».</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span data-lang="ru">Что значит ✗ у строки?</span>
+        <span data-lang="en">What does ✗ mean on a row?</span>
+      </div>
+      <div class="faq-a" data-lang="ru">Ссылка не найдена / не скачалось / в архиве нет нужного файла / не удалось вставить в сцену. Смотри лог Listener или попробуй ручной файл.</div>
+      <div class="faq-a" data-lang="en">Link not found / download failed / no valid file in the archive / failed to merge into scene. Check the Listener log or try a manual file.</div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    VISER PLUGIN &nbsp;&mdash;&nbsp; MODEL LOADER &nbsp;&mdash;&nbsp; kofein3d@gmail.com
+  </div>
+
+</div>
+<script>
+var currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
+  });
+
+  var titles = { ru: 'Коротко: 4 шага', en: 'Quick start: 4 steps' };
+  document.getElementById('quick-title').textContent = titles[lang];
+
+  document.querySelectorAll('[data-lang]').forEach(function(el) {
+    if (el.classList.contains('faq-a')) return;
+    if (el.classList.contains('faq-q')) return;
+    var match = el.getAttribute('data-lang') === lang;
+    var isInline = el.tagName === 'SPAN';
+    if (isInline) {
+      el.style.display = match ? 'inline' : 'none';
+    } else if (el.classList.contains('step-card') || el.classList.contains('anno')) {
+      el.style.display = match ? 'flex' : 'none';
+    } else {
+      el.style.display = match ? 'block' : 'none';
+    }
+  });
+
+  // FAQ q spans
+  document.querySelectorAll('.faq-q span[data-lang]').forEach(function(el) {
+    el.style.display = el.getAttribute('data-lang') === lang ? 'inline' : 'none';
+  });
+
+  // FAQ answers — переоткрываем открытые
+  document.querySelectorAll('.faq-item').forEach(function(item) {
+    var isOpen = item.querySelector('.faq-q.open');
+    item.querySelectorAll('.faq-a').forEach(function(a) {
+      a.style.display = (isOpen && a.getAttribute('data-lang') === lang) ? 'block' : 'none';
+    });
+  });
+}
+
+function toggleFaq(qEl) {
+  var item = qEl.closest('.faq-item');
+  var isOpen = qEl.classList.contains('open');
+
+  document.querySelectorAll('.faq-q.open').forEach(function(q) {
+    q.classList.remove('open');
+    q.closest('.faq-item').querySelectorAll('.faq-a').forEach(function(a) { a.style.display = 'none'; });
+  });
+
+  if (!isOpen) {
+    qEl.classList.add('open');
+    item.querySelectorAll('.faq-a[data-lang="' + currentLang + '"]').forEach(function(a) {
+      a.style.display = 'block';
+    });
+  }
+}
+
+setLang('en');
+</script>
+</body>
+</html>
