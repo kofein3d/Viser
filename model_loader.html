@@ -25,7 +25,6 @@ body {
   min-width: 320px;
   margin: 0 auto;
   background: #333333;
-  min-height: 100vh;
 }
 
 /* ── HEADER ── */
@@ -407,12 +406,12 @@ strong { color: #fff; }
     <div class="section-title" data-lang="en">Authorization</div>
 
     <div data-lang="ru">
-      <p>Поля <strong>Email</strong> и <strong>Password</strong> появляются только если Model Loader не смог войти автоматически.</p>
-      <p>Введи данные своего аккаунта на nfinite.app и нажми <strong>Sign In</strong> — поля снова скроются. Повторно входить обычно не нужно.</p>
+      <p>Поля <strong class="tag-yellow">Email</strong> и <strong class="tag-yellow">Password</strong> появляются только если Model Loader не смог войти автоматически.</p>
+      <p>Введи данные своего аккаунта на nfinite.app и нажми <strong class="tag-yellow">Sign In</strong> — поля снова скроются. Повторно входить обычно не нужно.</p>
     </div>
     <div data-lang="en">
-      <p><strong>Email</strong> and <strong>Password</strong> fields appear only if Model Loader could not sign in automatically.</p>
-      <p>Enter your nfinite.app account credentials and click <strong>Sign In</strong> — the fields will hide again. You usually don't need to sign in again.</p>
+      <p><strong class="tag-yellow">Email</strong> and <strong class="tag-yellow">Password</strong> fields appear only if Model Loader could not sign in automatically.</p>
+      <p>Enter your nfinite.app account credentials and click <strong class="tag-yellow">Sign In</strong> — the fields will hide again. You usually don't need to sign in again.</p>
     </div>
   </div>
 
@@ -424,23 +423,23 @@ strong { color: #fff; }
     <div data-lang="ru">
       <p>Введи SKU модели в строку. Разделители - и _ равнозначны: 820001-VAR-01 и 820001_VAR_01 — одно и то же.</p>
       <p><strong>Много моделей:</strong> скопируй список SKU (по одному в строке) и вставь Ctrl+V — строки добавятся автоматически.</p>
-      <p>Кнопка <strong>«+»</strong> добавляет пустую строку вручную. После запуска батча она блокируется.</p>
+      <p>Кнопка <strong class="tag-yellow">«+»</strong> добавляет пустую строку вручную. После запуска батча она блокируется.</p>
       <div class="warning">
         <strong>Цвет фона поля:</strong><br/>
-        <span class="tag tag-red">красный</span> — SKU нет в базе, или это дубль.<br/>
-        <span class="tag tag-yellow">жёлтый</span> — SKU содержит ACC: аксессуаризация неприемлема. Кликни <strong class="tag-yellow">?</strong> справа для подробностей.<br/><br/>
-        Кнопка <strong>Load</strong> заблокирована пока есть красные или жёлтые строки.
+        <span class="tag tag-red">КРАСНЫЙ</span> — SKU нет в базе, или это дубль.<br/>
+        <span class="tag tag-yellow">ЖЁЛТЫЙ</span> — SKU содержит ACC: аксессуаризация неприемлема. Кликни <strong class="tag-yellow">?</strong> справа для подробностей.<br/><br/>
+        Кнопка <strong class="tag-yellow">Load</strong> заблокирована пока есть красные или жёлтые строки.
       </div>
     </div>
     <div data-lang="en">
       <p>Type the model article number into the field. Separators - and _ are interchangeable: 820001-VAR-01 and 820001_VAR_01 are the same.</p>
       <p><strong>Multiple models:</strong> copy a list of SKUs (one per line) and paste Ctrl+V — rows are added automatically.</p>
-      <p>The <strong>«+»</strong> button adds an empty row manually. It is disabled after the batch starts.</p>
+      <p>The <strong class="tag-yellow">«+»</strong> button adds an empty row manually. It is disabled after the batch starts.</p>
       <div class="warning">
         <strong>Field background color:</strong><br/>
         <span class="tag tag-red">RED</span> — SKU not found in the database, or it's a duplicate.<br/>
         <span class="tag tag-yellow">YELLOW</span> — SKU contains ACC: accessories are not supported. Click <strong class="tag-yellow">?</strong> on the right for details.<br/><br/>
-        The <strong>Load</strong> button is blocked while any red or yellow rows are present.
+        The <strong class="tag-yellow">Load</strong> button is blocked while any red or yellow rows are present.
       </div>
     </div>
   </div>
@@ -452,25 +451,25 @@ strong { color: #fff; }
 
     <div data-lang="ru">
       <p><strong>Parallel</strong> — поле внизу слева, число одновременных загрузок (по умолчанию 4, диапазон 1–8). Обычно менять не нужно.</p>
-      <p>Нажми <strong>Load</strong>. Модели скачиваются <strong>параллельно</strong> и каждая добавляется в сцену <strong>сразу как скачается</strong> — без ожидания остальных.</p>
+      <p>Нажми <strong class="tag-yellow">Load</strong>. Модели скачиваются параллельно и каждая добавляется в сцену сразу как скачается — без ожидания остальных.</p>
       <ul>
         <li><span class="tag tag-green">✓</span> — модель добавлена в сцену.</li>
         <li><span class="tag tag-red">✗</span> — ошибка. Подробности в лог Listener.</li>
       </ul>
-      <p>Во время загрузки окно <strong>заблокировано</strong>. После завершения появится краткое окно ожидания (обновление сцены — время зависит от размера сцены), затем итог: <em>Done. Added: X, errors: Y</em>.</p>
-      <p>Все добавленные модели будут <strong>выделены</strong> в сцене.</p>
-      <div class="note"><strong>Cancel</strong> прерывает загрузку. Уже добавленные модели остаются в сцене.</div>
+      <p>Во время загрузки окно заблокировано. После завершения появится краткое окно ожидания (обновление сцены — время зависит от размера сцены), затем итог: <em>Done. Added: X, errors: Y</em>.</p>
+      <p>Все добавленные модели будут выделены в сцене.</p>
+      <div class="note" style="background:#333333"><strong>Cancel</strong> прерывает загрузку. Уже добавленные модели остаются в сцене.</div>
     </div>
     <div data-lang="en">
       <p><strong>Parallel</strong> — bottom-left field, number of simultaneous downloads (default 4, range 1–8). Usually no need to change.</p>
-      <p>Click <strong>Load</strong>. Models are downloaded <strong>in parallel</strong> and each one is added to the scene <strong>as soon as it's ready</strong> — without waiting for the others.</p>
+      <p>Click <strong class="tag-yellow">Load</strong>. Models are downloaded in parallel and each one is added to the scene as soon as it's ready — without waiting for the others.</p>
       <ul>
         <li><span class="tag tag-green">✓</span> — model added to the scene.</li>
         <li><span class="tag tag-red">✗</span> — error. Details in the Listener log.</li>
       </ul>
-      <p>While loading the window is <strong>locked</strong>. After completion a brief wait window appears (scene update — time depends on scene size), then the summary: <em>Done. Added: X, errors: Y</em>.</p>
-      <p>All added models will be <strong>selected</strong> in the scene.</p>
-      <div class="note"><strong>Cancel</strong> stops the batch. Already added models remain in the scene.</div>
+      <p>While loading the window is locked. After completion a brief wait window appears (scene update — time depends on scene size), then the summary: <em>Done. Added: X, errors: Y</em>.</p>
+      <p>All added models will be selected in the scene.</p>
+      <div class="note" style="background:#333333"><strong>Cancel</strong> stops the batch. Already added models remain in the scene.</div>
     </div>
   </div>
 
@@ -482,20 +481,20 @@ strong { color: #fff; }
     <div data-lang="ru">
       <p>Если SKU нет в базе (красный фон) — можно указать файл вручную:</p>
       <ol>
-        <li>Нажми <strong>«…»</strong> в строке.</li>
+        <li>Нажми <strong class="tag-yellow">«…»</strong> в строке.</li>
         <li>Выбери архив (.zip) или сцену (.max).</li>
-        <li>Нажми <strong>Load</strong> — Model Loader возьмёт этот файл вместо базы.</li>
+        <li>Нажми <strong class="tag-yellow">Load</strong> — Model Loader возьмёт этот файл вместо базы.</li>
       </ol>
-      <div class="note">Ручной файл имеет <strong>приоритет</strong>: если выбран, поиск по базе для этой строки игнорируется. Иконка кнопки меняется на 📎.</div>
+      <div class="note">Ручной файл имеет приоритет: если выбран, поиск по базе для этой строки игнорируется. Иконка кнопки меняется на 📎.</div>
     </div>
     <div data-lang="en">
       <p>If the SKU is not in the database (red background) — you can specify a file manually:</p>
       <ol>
-        <li>Click <strong>«…»</strong> in the row.</li>
+        <li>Click <strong class="tag-yellow">«…»</strong> in the row.</li>
         <li>Select an archive (.zip) or scene (.max).</li>
-        <li>Click <strong>Load</strong> — Model Loader will use this file instead of the database.</li>
+        <li>Click <strong class="tag-yellow">Load</strong> — Model Loader will use this file instead of the database.</li>
       </ol>
-      <div class="note">A manual file takes <strong>priority</strong>: if selected, the database lookup for that row is skipped. The button icon changes to 📎.</div>
+      <div class="note">A manual file takes priority: if selected, the database lookup for that row is skipped. The button icon changes to 📎.</div>
     </div>
   </div>
 
